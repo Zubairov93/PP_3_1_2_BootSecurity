@@ -59,6 +59,18 @@ public class UserServiceImp implements UserService, UserDetailsService {
     public void update(User user) {
         user.setRoles(userRepository.findById(user.getId()).get().getRoles());
         userRepository.save(user);
+        User usersPassword = userRepository.findById(user.getId()).orElse(null);
+        if (usersPassword != null) {
+            String currentPass = usersPassword.getPassword();
+            if(!bCryptPasswordEncoder.matches(user.getPassword(), currentPass)) {
+                usersPassword.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            }
+            usersPassword.setUsername(user.getUsername());
+            userRepository.save(usersPassword);
+
+        }
+
+
     }
 
     @Transactional()
@@ -90,6 +102,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
         user.setRoles(Collections.singleton(role1));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+
     }
 
     @Override
@@ -106,20 +119,15 @@ public class UserServiceImp implements UserService, UserDetailsService {
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException(username);
         }
-
         User user = userOptional.get();
         Hibernate.initialize(user.getRoles()); // Инициализация ролей
-
         Set<Role> roles = user.getRoles();
-
         if (roles == null) {
             throw new UsernameNotFoundException("User has no roles: " + username);
         }
-
         for (Role role : roles) {
             System.out.println(role.getName());
         }
-
         return user;
     }
 
@@ -147,6 +155,8 @@ public class UserServiceImp implements UserService, UserDetailsService {
     roles.add(userRole);
     user.setRoles(roles);
 
-    userRepository.save(user); }
+    userRepository.save(user);
+    userRepository.save(user1);
+    }
 }
 
