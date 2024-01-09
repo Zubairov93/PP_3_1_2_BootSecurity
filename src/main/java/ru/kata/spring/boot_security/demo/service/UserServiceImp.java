@@ -123,18 +123,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
         return user;
     }
 
-//    @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        Optional<User> user = userRepository.findByUsername(username);
-//        for (Role role : user.get().getRoles()) {
-//            System.out.println(role.getName());
-//        }
-//        if (user.isEmpty()) {
-//            throw new UsernameNotFoundException(username);
-//        }
-//        return user.get();
-//    }
+
 
     @Transactional
     public void initUser() {
@@ -146,12 +135,12 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     // Создайте пользователя с ролями
     User user = new User();
-    user.setUsername("Admin");
-    user.setPassword(bCryptPasswordEncoder.encode("6"));
+    user.setUsername("admin");
+    user.setPassword(bCryptPasswordEncoder.encode("admin"));
     user.setRoles(Set.of(adminRole));
     User user1 = new User();
-    user1.setUsername("User");
-    user1.setPassword(bCryptPasswordEncoder.encode("5"));
+    user1.setUsername("user");
+    user1.setPassword(bCryptPasswordEncoder.encode("user"));
     user1.setRoles(Set.of(userRole));
     Set<Role> roles = new HashSet<>();
     roles.add(adminRole);
@@ -160,16 +149,4 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     userRepository.save(user); }
 }
-//        User user = new User();
-//        user.setUsername("A1");
-//        user.setPassword(bCryptPasswordEncoder.encode("6"));
-//        Set<Role> roles = new HashSet<>();
-//        roles.add(new Role(1l, "ROLE_ADMIN"));
-//        roles.add(new Role(2l, "ROLE_USER"));
-//        roleRepository.saveAll(roles);
-//        user.setRoles(roles);
-//
-//
-//        userRepository.save(user);
-//
-//    }
+
